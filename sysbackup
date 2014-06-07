@@ -1,0 +1,1 @@
+tar -cvzf /mnt/data/sysbackup/lian.backup.tar.gz --exclude=proc --exclude=sys --exclude=dev --exclude=/mnt/* --exclude=/rw --exclude=/ro /

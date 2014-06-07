@@ -1,0 +1,1 @@
+rsync -av --delete /mnt/ 83.183.174.17::backup | tee /backup_remote.log

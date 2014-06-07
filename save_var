@@ -1,0 +1,6 @@
+#!/bin/sh
+touch /save_var.log
+echo Storing save, at `date` >> /save_var.log
+rsync -a --delete --exclude /var/lib/ntp/proc /dev/shm/ /save
+rm -r /save/tmp
+rm -r /save/sysconfig

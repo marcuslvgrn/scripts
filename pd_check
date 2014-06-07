@@ -1,0 +1,67 @@
+#!/usr/bin/perl -w
+$logfile="/var/log/pd_check.log";
+$devpath = "/dev/disk/by-id/";
+@devices=($devpath."ata-ST3000DM001-9YN166_W1F0HZXN",$devpath."ata-ST3000DM001-9YN166_W1F0LVB1",$devpath."ata-ST3000DM001-9YN166_Z1F0EJ0L",$devpath."ata-ST3000DM001-9YN166_Z1F0D9GD");
+
+open(LOG, ">$logfile") or die("$!\n");
+($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst)=localtime(time);
+$startdate=sprintf "%4d-%02d-%02d %02d:%02d:%02d",$year+1900,$mon+1,$mday,$hour,$min,$sec;
+print LOG "$startdate: Monitoring powerdown of hard drives:\n";
+foreach (@devices) {
+  $state=`hdparm -C $_ | grep state | awk '{print \$4}'`;
+  chomp($state);
+  $states{$_} = $state;
+  print LOG "$startdate: $_ is in state $states{$_}\n";
+  if ($state eq "standby") {
+    $percentage_up{$_}=0;
+    $percentage_down{$_}=100;
+  } else {
+    $percentage_up{$_}=100;
+    $percentage_down{$_}=0;
+  }
+  $uptime{$_} = 0;
+  $downtime{$_} = 0;
+  $last_check = time;
+}
+print LOG "##########\n";
+close(LOG);
+
+while(1) {
+  sleep(300);
+  $states_changed="false";
+  foreach (@devices) {
+    $new_state = `hdparm -C $_ | grep state | awk '{print \$4}'`;
+    chomp($new_state);
+    if ($states{$_} ne $new_state) {
+      $states_changed="true";
+      open(LOG, ">>$logfile") or die("$!\n");
+      ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst)=localtime(time);
+      $date=sprintf "%4d-%02d-%02d %02d:%02d:%02d",$year+1900,$mon+1,$mday,$hour,$min,$sec;
+      print LOG "$date: Device $_ changed pd state to $new_state\n";
+      if ($new_state eq "standby") {
+	$uptime{$_} += time-$last_check;
+      } else {
+	$spinups{$_}++;
+	$downtime{$_} += time-$last_check;
+	print LOG "$date: Device $_ has spun up $spinups{$_} time(s) since $startdate\n";
+      }
+    } elsif ($states{$_} eq "standby") {
+      $downtime{$_} += time-$last_check;
+    } else {
+      $uptime{$_} += time-$last_check;
+    }
+    $percentage_down{$_} = sprintf "%2d", (100*$downtime{$_})/($downtime{$_}+$uptime{$_});
+    $percentage_up{$_} = 100-$percentage_down{$_};
+    $states{$_} = $new_state;
+  }
+  $last_check = time;
+  if ($states_changed eq "true") {
+    print LOG "Statistics:\n";
+    print LOG "Device\tUp\tDown\tState\n";
+    foreach (@devices) {
+      print LOG "$_\t$percentage_up{$_}\%\t$percentage_down{$_}\%\t$states{$_}\n";
+    }
+    print LOG "##########\n";
+    close(LOG);
+  }
+}

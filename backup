@@ -1,0 +1,4 @@
+rsync -av --delete-after --delete-excluded \
+--exclude .AppleDouble --exclude .DS_Store --exclude .Apple* \
+--password-file=/usr/local/bin/rsync_password \
+/mnt/data/ root@backup.marcuslovgren.dyndns.org::backup | tee /var/log/backup.log

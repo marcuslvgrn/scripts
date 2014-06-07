@@ -1,0 +1,36 @@
+#!/usr/bin/perl -w
+$logfile="/var/log/set_spindown_to.log";
+$devpath = "/dev/disk/by-id/";
+@devices=($devpath."ata-ST3000DM001-9YN166_W1F0HZXN",$devpath."ata-ST3000DM001-9YN166_W1F0LVB1",$devpath."ata-ST3000DM001-9YN166_Z1F0EJ0L",$devpath."ata-ST3000DM001-9YN166_Z1F0D9GD");
+
+open(LOG, ">>$logfile") or die("$!\n");
+($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst)=localtime(time);
+$startdate=sprintf "%4d-%02d-%02d %02d:%02d:%02d",$year+1900,$mon+1,$mday,$hour,$min,$sec;
+print LOG "$startdate: Checking consistensy of power down: ";
+$no_standby = 0;
+$no_active = 0;
+foreach (@devices) {
+  $state=`hdparm -C $_ | grep state | awk '{print \$4}'`;
+  chomp($state);
+  $states{$_} = $state;
+  if ($state eq "standby") {
+    $no_standby++;
+  } else {
+    $no_active++;
+  }
+}
+if ($no_active > 0 and $no_standby > 0) {
+  foreach (@devices) {
+    unless ($states{$_} eq "standby") {
+      #reset timeout
+      print LOG "$_ was awake, setting timeout and go to sleep\n";
+      print LOG `/sbin/hdparm -S 241 $_`;
+#      print LOG `/sbin/hdparm -y $_`;
+    }
+  }
+  print LOG "timeouts were updated!\n";
+} else {
+  print LOG "OK\n";
+}
+print LOG "##########\n";
+close(LOG);

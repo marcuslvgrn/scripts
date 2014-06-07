@@ -1,0 +1,5 @@
+#!/bin/sh
+echo 0 > /sys/class/rtc/rtc0/wakealarm
+/sbin/ethtool -s eth0 wol g
+/sbin/ethtool eth0
+cat /proc/driver/rtc

@@ -1,0 +1,1 @@
+rsync -avn --delete-after /mnt/* /media/backup/mnt | tee /backup.log
