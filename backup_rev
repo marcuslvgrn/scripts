@@ -1,0 +1,8 @@
+rsync -av --delete \
+--exclude /dev \
+--exclude /proc \
+--exclude /sys \
+--exclude /save \
+--exclude /mnt \
+--password-file=/usr/local/bin/rsync_password \
+root@dns-323::backup / | tee /backup.log

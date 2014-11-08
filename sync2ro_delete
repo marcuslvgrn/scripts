@@ -1,0 +1,15 @@
+#!/bin/sh
+if mount | grep -q 'aufs on /'; then
+echo "Syncing ramdisk to ro..."
+echo "Syncing ramdisk to ro at `date`" >> /var/log/sync2ro.log
+remountrw
+rsync -av \
+--delete \
+--exclude etc/fstab --exclude etc/mtab \
+--exclude proc --exclude sys --exclude dev \
+--exclude mnt/* --exclude ro --exclude rw \
+--exclude bin/remountro --exclude bin/remountrw \
+--exclude run --exclude tmp \
+/ /ro
+remountro
+fi

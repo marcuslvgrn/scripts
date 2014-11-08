@@ -1,0 +1,28 @@
+#!/bin/sh
+### BEGIN INIT INFO
+# Provides: lld2d
+# Required-Start:
+# Required-Stop: 
+# Default-Start: 2 3 5
+# Description: 
+### END INIT INFO
+
+case "$1" in
+'start')
+	/root/bin/lld2d eth0 &
+	;;
+'stop')
+	killall lld2d
+	;;
+'restart')
+	$0 stop
+	$0 start
+	;;	
+'status')
+	ps -e | grep lld2d
+	;;
+*)
+	echo "Usage: $0 { start | stop | restart}"
+	;;
+esac
+exit 0

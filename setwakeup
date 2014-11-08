@@ -1,0 +1,12 @@
+#!/bin/sh
+#$1 is the first argument to the script. It is the time in seconds since 1970
+touch /var/log/shutdown.log
+echo "Shutting down at `date`, will restart at `date -d \"today 15:00\"`" | tee -a /var/log/shutdown.log
+/sbin/ethtool -s eth0 wol g
+/sbin/ethtool eth0 | tee -a /var/log/shutdown.log
+
+echo 0 > /sys/class/rtc/rtc0/wakealarm      #this clears the alarm.
+echo `date -u --date "\`date -d today +%F\` 15:00:00" +%s` > /sys/class/rtc/rtc0/wakealarm  #this sets the alarm
+echo "wakeup settings:" | tee -a /var/log/shutdown.log
+cat /proc/driver/rtc | tee -a /var/log/var/log/shutdown.log
+/sbin/shutdown -h now | tee -a /var/log/shutdown.log
