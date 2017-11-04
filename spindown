@@ -11,9 +11,9 @@
 case "$1" in
 'start')
 	/sbin/hdparm -S 241 /dev/disk/by-id/ata-ST3000DM001-9YN166_W1F0HZXN
-	/sbin/hdparm -S 241 /dev/disk/by-id/ata-ST3000DM001-9YN166_W1F0LVB1
 	/sbin/hdparm -S 241 /dev/disk/by-id/ata-ST3000DM001-9YN166_Z1F0EJ0L
 	/sbin/hdparm -S 241 /dev/disk/by-id/ata-ST3000DM001-9YN166_Z1F0D9GD
+	/sbin/hdparm -S 241 /dev/disk/by-id/ata-WDC_WD5000AAVS-00ZTB0_WD-WCASU3755205
 	/etc/init.d/pd_check &
 	;;
 'stop')
@@ -21,10 +21,12 @@ case "$1" in
 	;;
 'restart')
 	/sbin/hdparm -S 241 /dev/disk/by-id/ata-ST3000DM001-9YN166_W1F0HZXN
-	/sbin/hdparm -S 241 /dev/disk/by-id/ata-ST3000DM001-9YN166_W1F0LVB1
 	/sbin/hdparm -S 241 /dev/disk/by-id/ata-ST3000DM001-9YN166_Z1F0EJ0L
 	/sbin/hdparm -S 241 /dev/disk/by-id/ata-ST3000DM001-9YN166_Z1F0D9GD
-	#/etc/init.d/pd_check &
+	/sbin/hdparm -S 241 /dev/disk/by-id/ata-WDC_WD5000AAVS-00ZTB0_WD-WCASU3755205
+	echo "Restarted" >> /var/log/pd_check.log
+        date >> /var/log/pd_check.log
+        #/etc/init.d/pd_check &
 	#$0 stop
 	#$0 start
 	;;	

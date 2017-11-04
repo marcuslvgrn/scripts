@@ -1,1 +1,2 @@
+#mount /dev/sdf1 /mnt/temp -o utf8=true
 rsync -v --exclude *.thumb --exclude *.xml --exclude=.AppleDouble --exclude .DS_Store --delete-excluded --delete --modify-window=1 --recursive --update --times /mnt/data/Musik/mp3/ /mnt/temp/ | tee /var/log/cpMp3Car.log

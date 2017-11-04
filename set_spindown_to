@@ -1,7 +1,7 @@
 #!/usr/bin/perl -w
 $logfile="/var/log/set_spindown_to.log";
 $devpath = "/dev/disk/by-id/";
-@devices=($devpath."ata-ST3000DM001-9YN166_W1F0HZXN",$devpath."ata-ST3000DM001-9YN166_W1F0LVB1",$devpath."ata-ST3000DM001-9YN166_Z1F0EJ0L",$devpath."ata-ST3000DM001-9YN166_Z1F0D9GD");
+@devices=($devpath."ata-ST3000DM001-9YN166_W1F0HZXN",$devpath."ata-ST3000DM001-9YN166_Z1F0EJ0L",$devpath."ata-ST3000DM001-9YN166_Z1F0D9GD",$devpath."ata-WDC_WD5000AAVS-00ZTB0_WD-WCASU3755205");
 
 open(LOG, ">>$logfile") or die("$!\n");
 ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst)=localtime(time);

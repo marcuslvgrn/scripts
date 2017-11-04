@@ -1,23 +1,33 @@
 #!/bin/sh
-if mount | grep -q 'aufs on /'; then
+### BEGIN INIT INFO
+# Provides:          sync2ro
+# Required-Start:    
+# Required-Stop:     
+# X-Start-Before:    
+# X-Stop-After:      
+# Default-Start:     0 6
+# Default-Stop:_     
+# Short-Description: 
+# Description:       
+### END INIT INFO
+if mount | grep -q 'overlay on /'; then
 echo "Syncing ramdisk to ro at `date`" >> /var/log/sync2ro.log
-mount >> /var/log/sync2ro.log
 echo "Remounting / rw..."
-remountrw
+mount -o remount,rw /mnt/root-ro
 echo "Syncing ramdisk to ro..."
 rsync -av \
 --delete-after \
 --exclude /etc/fstab --exclude /etc/mtab \
 --exclude /proc --exclude /sys --exclude /dev \
---exclude /mnt/data --exclude /mnt/owncloud-sync --exclude /mnt/btrfs --exclude /ro --exclude /rw \
---exclude /bin/remountro --exclude /bin/remountrw \
+--exclude '/mnt/**' \
 --exclude /run --exclude /tmp \
-/ /ro | tee -a /var/log/sync2ro.log
+/ /mnt/root-ro | tee -a /var/log/sync2ro.log
 #echo "Remounting / ro..."
 sync
 #sleep 5
 #remountro
 #Store complete log
-cp /var/log/sync2ro.log /ro/var/log/sync2ro.log
+cp /var/log/sync2ro.log /mnt/root-ro/var/log/sync2ro.log
 fi
 echo "Done."
+exit 0

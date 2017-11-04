@@ -1,4 +1,4 @@
 hdparm -C /dev/disk/by-id/ata-ST3000DM001-9YN166_W1F0HZXN
-hdparm -C /dev/disk/by-id/ata-ST3000DM001-9YN166_W1F0LVB1
-hdparm -C /dev/disk/by-id/ata-ST3000DM001-9YN166_Z1F0EJ0L
 hdparm -C /dev/disk/by-id/ata-ST3000DM001-9YN166_Z1F0D9GD
+hdparm -C /dev/disk/by-id/ata-ST3000DM001-9YN166_Z1F0EJ0L
+hdparm -C /dev/disk/by-id/ata-WDC_WD5000AAVS-00ZTB0_WD-WCASU3755205
