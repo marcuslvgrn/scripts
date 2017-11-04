@@ -1,0 +1,34 @@
+#!/bin/sh
+### BEGIN INIT INFO
+# Provides:          sync2ro
+# Required-Start:    
+# Required-Stop:     
+# X-Start-Before:    
+# X-Stop-After:      
+# Default-Start:     0 6
+# Default-Stop:_     
+# Short-Description: 
+# Description:       
+### END INIT INFO
+if mount | grep -q 'overlayroot on /'; then
+echo "Remounting / rw..."
+mount -o remount,rw /media/root-ro
+echo "Syncing ramdisk to ro..."
+echo "Syncing ramdisk to ro at `date`" >> /media/root-ro/var/log/sync2ro.log
+rsync -av \
+--delete-after \
+--exclude /etc/fstab --exclude /etc/mtab \
+--exclude /proc --exclude /sys --exclude /dev \
+--exclude '/mnt/**' \
+--exclude /run \
+--exclude /tmp \
+--exclude /media \
+--exclude /var/lib/lxcfs \
+/ /media/root-ro/ | tee -a /media/root-ro/var/log/sync2ro.log
+#echo "Remounting / ro..."
+sync
+#sleep 5
+#remountro
+fi
+echo "Done."
+exit 0

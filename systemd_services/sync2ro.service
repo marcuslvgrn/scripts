@@ -1,0 +1,10 @@
+[Unit]
+Description=Sync data to read only file system
+
+[Service]
+ExecStop=/root/bin/sync2ro
+ExecStart=/bin/true
+RemainAfterExit=true
+
+[Install]
+WantedBy=multi-user.target
